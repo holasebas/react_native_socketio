@@ -5,7 +5,8 @@ import {
   Text,
   View,
   ListView,
-  Dimensions
+  Dimensions,
+  TouchableHighlight
 } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 var CircularProgressDisplay = require('react-native-progress-circular')
@@ -25,9 +26,10 @@ export default class real_time_communication extends Component {
       progressM:0,
       progressW:0,
       progressC:0,
-      amout:0
+      amout:0,  
+     
     };
-  
+  // Set with your own host ip
   this.socket = SocketIOClient('http://192.168.1.72:8080');
   this.socket.on('checked', (message) => {
   checks.unshift(message)
@@ -35,39 +37,15 @@ export default class real_time_communication extends Component {
   this._calculate(checks)
   });
 
+
     
   }
   componentDidMount(){
-    var w = 0;
-    var m = 0;
-    var c = 0;
-    var amout = 0;
-
-    for (var i = 0; i < checks.length; i++) {
-      if(checks[i].type == 'women'){
-        w = w + 1
-        amout = amout + 40
-      }
-       if(checks[i].type == 'man'){
-        m = m + 1
-         amout = amout + 60
-      }
-       if(checks[i].type == 'child'){
-        c = c + 1
-         amout = amout + 20
-      }
-    
-    }
-    this.setState({
-      progressM: (m * 100) / checks.length,
-      progressW: (w * 100) / checks.length,
-      progressC: (c * 100) / checks.length,
-      amout: amout
-    })
+   this._calculate(checks)
   }
 
   _calculate(checks){
-     var w = 0;
+    var w = 0;
     var m = 0;
     var c = 0;
     var amout = 0;
@@ -129,7 +107,7 @@ export default class real_time_communication extends Component {
       var Childs = (
       <View style={{width: 200, height: 200, flex:1, justifyContent: 'center',
       alignItems: 'center', backgroundColor: '#036282'}}>
-        <Text style={{fontSize: 15, color:'#fff'}}>Childs</Text>
+        <Text style={{fontSize: 15, color:'#fff'}}>Child</Text>
         <Text style={{fontSize: 15, color:'#fff'}}>{Math.round(progressC) + "%"}</Text>
       </View>
     );
@@ -161,14 +139,10 @@ export default class real_time_communication extends Component {
             </View>
 
 
-        
            <View style={styles.amout}>
              <Text style={styles.amoutText}>Amount rate:</Text>
              <Text style={styles.amoutA}>${this.state.amout}.00</Text>
            </View> 
-
-
-
 
       <ListView
             style={styles.listView}
@@ -177,9 +151,6 @@ export default class real_time_communication extends Component {
             renderRow={this._renderRow.bind(this)}
             automaticallyAdjustContentInsets={false}
         />
-
-        
-
       </View>
 
     );
